@@ -13,4 +13,7 @@ public class BusinessCode {
     public static final ErrorResponse INTERNAL_SERVER =
             new ErrorResponse("INTERNAL-SERVER", "Something went wrong", HttpStatus.INTERNAL_SERVER_ERROR);
 
+    public static final ErrorResponse NOT_FOUND_USER =
+            new ErrorResponse("NOT-FOUND-USER", "Not found user with id", HttpStatus.BAD_REQUEST);
+
 }
