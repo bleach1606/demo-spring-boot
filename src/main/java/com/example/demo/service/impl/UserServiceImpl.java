@@ -6,31 +6,35 @@ import com.example.demo.exception.BusinessException;
 import com.example.demo.mapper.UserMapper;
 import com.example.demo.model.reponse.response.UserResponse;
 import com.example.demo.model.request.user.CreateUserRequest;
+import com.example.demo.repository.ProfileRepository;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.service.UserService;
+import com.example.demo.specification.UserSpecification;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Log4j2
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepo;
+    private final ProfileRepository profileRepository;
 
     private final UserMapper userMapper;
 
-    public UserServiceImpl(UserRepository userRepo, UserMapper userMapper) {
+    public UserServiceImpl(UserRepository userRepo, ProfileRepository profileRepository, UserMapper userMapper) {
         this.userRepo = userRepo;
+        this.profileRepository = profileRepository;
         this.userMapper = userMapper;
     }
 
     @Override
     public UserResponse save(CreateUserRequest request) {
         User user = userMapper.to(request);
-        return userMapper.to(userRepo.save(user));
+        return userMapper.to(userRepo.saveAndFlush(user));
     }
 
     @Override
@@ -42,8 +46,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserResponse> findALL() {
-        List<User> users = userRepo.findAll();
-        return users.stream().map(userMapper::to).collect(Collectors.toList());
+    public Page<UserResponse> findALL(Pageable pageable) {
+        Page<User> users = userRepo.findAll(
+                UserSpecification.filter(null, null),
+                pageable
+        );
+        return users.map(userMapper::to);
     }
 }

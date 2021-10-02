@@ -7,24 +7,26 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
-@Table(name = "user", schema = "public")
+@Table(name = "category", schema = "public")
 @Data
 @SuperBuilder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
 @EntityListeners(value = BaseModelListener.class)
-public class User extends BaseModel {
+public class Category extends BaseModel {
 
-    @Column(name = "username", length = 50)
-    private String username;
+    @Column(name = "code", length = 50)
+    private String code;
 
-    @Column(name = "password", length = 50)
-    private String password;
+    @Column(name = "name", length = 50)
+    private String name;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER) // default
-    @JoinColumn(name = "profile_id")
-    private Profile profile;
+//    fetch, cascade
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "category_id")
+    private List<SubCategory> subCategoryList;
 }

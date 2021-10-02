@@ -9,14 +9,14 @@ import lombok.experimental.SuperBuilder;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "user", schema = "public")
+@Table(name = "profile", schema = "public")
 @Data
 @SuperBuilder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
 @EntityListeners(value = BaseModelListener.class)
-public class User extends BaseModel {
+public class Profile extends BaseModel {
 
     @Column(name = "username", length = 50)
     private String username;
@@ -24,7 +24,7 @@ public class User extends BaseModel {
     @Column(name = "password", length = 50)
     private String password;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER) // default
-    @JoinColumn(name = "profile_id")
-    private Profile profile;
+    @OneToOne(cascade = CascadeType.ALL) // default
+    @JoinColumn(name = "user_id")
+    private User user;
 }

@@ -2,8 +2,11 @@ package com.example.demo.service;
 
 import com.example.demo.model.reponse.response.UserResponse;
 import com.example.demo.model.request.user.CreateUserRequest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
+
 
 public interface UserService {
 
@@ -11,5 +14,6 @@ public interface UserService {
 
     UserResponse findById(Long id);
 
-    List<UserResponse> findALL();
+    Page<UserResponse> findALL(Pageable pageable);
+
 }
