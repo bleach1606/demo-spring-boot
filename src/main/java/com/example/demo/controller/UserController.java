@@ -1,46 +1,132 @@
 package com.example.demo.controller;
 
-import com.example.demo.model.BaseResponse;
-import com.example.demo.model.reponse.response.UserResponse;
-import com.example.demo.model.request.user.CreateUserRequest;
-import com.example.demo.service.UserService;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import org.springframework.data.domain.Pageable;
-import org.springframework.web.bind.annotation.*;
-import springfox.documentation.annotations.ApiIgnore;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import javax.ws.rs.core.Response;
 
+import com.example.demo.model.UserDTO;
+import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
+import org.keycloak.OAuth2Constants;
+import org.keycloak.admin.client.CreatedResponseUtil;
+import org.keycloak.admin.client.Keycloak;
+import org.keycloak.admin.client.KeycloakBuilder;
+import org.keycloak.admin.client.resource.RealmResource;
+import org.keycloak.admin.client.resource.UserResource;
+import org.keycloak.admin.client.resource.UsersResource;
+import org.keycloak.authorization.client.AuthzClient;
+import org.keycloak.authorization.client.Configuration;
+import org.keycloak.representations.AccessTokenResponse;
+import org.keycloak.representations.idm.CredentialRepresentation;
+import org.keycloak.representations.idm.RoleRepresentation;
+import org.keycloak.representations.idm.UserRepresentation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+
+@RequestMapping(value = "/users")
 @RestController
-@RequestMapping("public-api/v1.0.0/users")
 public class UserController {
 
-    private final UserService userService;
+    private static final Logger log = LoggerFactory.getLogger(UserController.class);
 
-    public UserController(UserService userService) {
-        this.userService = userService;
+    private String authServerUrl = "http://localhost:8080/auth";
+    private String realm = "demoSpringBoot";
+    private String clientId = "login-app";
+    private String role = "user";
+    private String clientSecret = "220f45c4-da5e-47bc-aeea-36d3fdd715de";
+
+    @PostMapping(path = "/create")
+    public ResponseEntity<?> createUser(@RequestBody UserDTO userDTO) {
+
+        Keycloak keycloak = KeycloakBuilder.builder()
+                .serverUrl(authServerUrl)
+                .grantType(OAuth2Constants.PASSWORD)
+                .realm(realm)
+                .clientId(clientId)
+                .username("admin")
+                .password("123456")
+                .resteasyClient(new ResteasyClientBuilder().connectionPoolSize(10).build()).build();
+
+        keycloak.tokenManager().getAccessToken();
+
+
+        UserRepresentation user = new UserRepresentation();
+        user.setEnabled(true);
+        user.setUsername(userDTO.getEmail());
+        user.setFirstName(userDTO.getFirstname());
+        user.setLastName(userDTO.getLastname());
+        user.setEmail(userDTO.getEmail());
+
+        // Get realm
+        RealmResource realmResource = keycloak.realm(realm);
+        UsersResource usersRessource = realmResource.users();
+
+        Response response = usersRessource.create(user);
+
+        userDTO.setStatusCode(response.getStatus());
+        userDTO.setStatus(response.getStatusInfo().toString());
+
+        if (response.getStatus() == 201) {
+
+            String userId = CreatedResponseUtil.getCreatedId(response);
+
+            log.info("Created userId {}", userId);
+
+
+            // create password credential
+            CredentialRepresentation passwordCred = new CredentialRepresentation();
+            passwordCred.setTemporary(false);
+            passwordCred.setType(CredentialRepresentation.PASSWORD);
+            passwordCred.setValue(userDTO.getPassword());
+
+            UserResource userResource = usersRessource.get(userId);
+
+            // Set password credential
+            userResource.resetPassword(passwordCred);
+
+            // Get realm role student
+            RoleRepresentation realmRoleUser = realmResource.roles().get(role).toRepresentation();
+
+            // Assign realm role student to user
+            userResource.roles().realmLevel().add(Arrays.asList(realmRoleUser));
+        }
+        return ResponseEntity.ok(userDTO);
     }
 
-    @PostMapping
-    public BaseResponse<UserResponse> createUser(@RequestBody CreateUserRequest request) {
-        return BaseResponse.ofSuccess(userService.save(request));
+    @PostMapping(path = "/signin")
+    public ResponseEntity<?> signin(@RequestBody  UserDTO userDTO) {
+
+        Map<String, Object> clientCredentials = new HashMap<>();
+        clientCredentials.put("secret", clientSecret);
+        clientCredentials.put("grant_type", "password");
+
+        Configuration configuration =
+                new Configuration(authServerUrl, realm, clientId, clientCredentials, null);
+        AuthzClient authzClient = AuthzClient.create(configuration);
+
+        AccessTokenResponse response =
+                authzClient.obtainAccessToken(userDTO.getEmail(), userDTO.getPassword());
+
+        return ResponseEntity.ok(response);
     }
 
-    @GetMapping("{id}")
-    public BaseResponse<UserResponse> findById(@PathVariable Long id) {
-        return BaseResponse.ofSuccess(userService.findById(id));
+
+    @GetMapping(value = "/unprotected-data")
+    public String getName() {
+        return "Hello, this api is not protected.";
     }
 
-    @GetMapping("")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "page", dataType = "integer", paramType = "query",
-                    value = "Results page you want to retrieve (0..N)", defaultValue = "0"),
-            @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
-                    value = "Number of records per page.", defaultValue = "15"),
-            @ApiImplicitParam(name = "sort", allowMultiple = true, dataType = "string",
-                    paramType = "query", value = "Sorting criteria in the format: property(,asc|desc). "
-                    + "Default sort order is ascending. Multiple sort criteria are supported.")})
-    public BaseResponse<?> findAll(@ApiIgnore Pageable pageable) {
-        return BaseResponse.ofSuccess(userService.findALL(pageable));
+
+    @GetMapping(value = "/protected-data")
+    public String getEmail() {
+        return "Hello, this api is protected.";
     }
 
 }

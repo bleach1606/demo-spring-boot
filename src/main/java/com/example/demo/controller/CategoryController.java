@@ -2,7 +2,6 @@ package com.example.demo.controller;
 
 import com.example.demo.entity.Category;
 import com.example.demo.model.BaseResponse;
-import com.example.demo.model.reponse.response.UserResponse;
 import com.example.demo.repository.CategoryRepository;
 import org.springframework.web.bind.annotation.*;
 

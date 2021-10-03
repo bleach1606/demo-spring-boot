@@ -1,5 +1,5 @@
 server:
-  port: 8080
+  port: 8081
 
 # SPRING ----------------------------------------------------------------------------------------------------
 spring:
@@ -48,3 +48,13 @@ application:
   jwt:
     confirmation-secret: 123456
     time-to-live: 3600 # seconds
+
+keycloak:
+  realm: demoSpringBoot
+  auth-server-url: http://localhost:8080/auth
+  ssl-required: external
+  resource: login-app
+  credentials:
+    secret: 220f45c4-da5e-47bc-aeea-36d3fdd715de
+  use-resource-role-mappings: true
+  bearer-only: true
