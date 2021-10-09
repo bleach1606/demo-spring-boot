@@ -2,7 +2,7 @@ package com.example.demo.controller;
 
 import com.example.demo.model.BaseResponse;
 import com.example.demo.model.reponse.response.UserResponse;
-import com.example.demo.model.request.user.CreateUserRequest;
+import com.example.demo.model.request.request.CreateUserRequest;
 import com.example.demo.service.UserService;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;

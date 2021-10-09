@@ -26,7 +26,7 @@ public class Category extends BaseModel {
     private String name;
 
 //    fetch, cascade
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "category_id")
     private List<SubCategory> subCategoryList;
 }

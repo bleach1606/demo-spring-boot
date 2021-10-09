@@ -24,7 +24,4 @@ public class Profile extends BaseModel {
     @Column(name = "password", length = 50)
     private String password;
 
-    @OneToOne(cascade = CascadeType.ALL) // default
-    @JoinColumn(name = "user_id")
-    private User user;
 }

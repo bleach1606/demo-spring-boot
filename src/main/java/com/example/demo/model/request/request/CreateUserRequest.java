@@ -1,4 +1,4 @@
-package com.example.demo.model.request.user;
+package com.example.demo.model.request.request;
 
 import lombok.Data;
 

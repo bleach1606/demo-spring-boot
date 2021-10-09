@@ -4,7 +4,7 @@ import com.example.demo.entity.Profile;
 import com.example.demo.entity.User;
 import com.example.demo.model.reponse.response.ProfileResponse;
 import com.example.demo.model.reponse.response.UserResponse;
-import com.example.demo.model.request.user.CreateUserRequest;
+import com.example.demo.model.request.request.CreateUserRequest;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Component;
 
