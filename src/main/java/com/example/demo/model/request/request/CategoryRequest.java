@@ -8,5 +8,4 @@ import java.util.List;
 public class CategoryRequest {
     private String code;
     private String name;
-    private List<SubCategoryRequest> subCategoryList;
 }

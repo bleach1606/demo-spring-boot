@@ -6,4 +6,5 @@ import lombok.Data;
 public class ItemRequest {
     private String name;
     private float price;
+    private Long sub_category_id;
 }

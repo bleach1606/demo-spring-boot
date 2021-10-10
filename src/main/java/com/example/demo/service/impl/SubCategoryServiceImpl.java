@@ -1,9 +1,11 @@
 package com.example.demo.service.impl;
 
+import com.example.demo.entity.Category;
 import com.example.demo.entity.SubCategory;
 import com.example.demo.exception.BusinessCode;
 import com.example.demo.exception.BusinessException;
 import com.example.demo.mapper.SubCategoryMapper;
+import com.example.demo.model.reponse.response.SubCategoryDetailResponse;
 import com.example.demo.model.reponse.response.SubCategoryResponse;
 import com.example.demo.model.request.request.SubCategoryRequest;
 import com.example.demo.repository.SubCategoryRepository;
@@ -33,12 +35,26 @@ public class SubCategoryServiceImpl implements SubCatrgoryService {
     }
 
     @Override
-    public SubCategoryResponse findById(Long id) {
+    public SubCategoryResponse updateById(Long id, SubCategoryRequest subCategoryRequest) {
+        return subCategoryRepository.findById(id)
+                .map(subCategory -> {
+                    subCategory.setCode(subCategoryRequest.getCode());
+                    subCategory.setName(subCategoryRequest.getName());
+                    Category category = new Category();
+                    category.setId(subCategoryRequest.getCategory_id());
+                    subCategory.setCategory(category);
+                    return subCategoryMapper.to(subCategoryRepository.saveAndFlush(subCategory));
+                })
+                .orElseThrow(() -> new BusinessException(BusinessCode.NOT_FOUND_SUBCATEGORY));
+    }
+
+    @Override
+    public SubCategoryDetailResponse findById(Long id) {
         SubCategory subCategory = subCategoryRepository.findById(id).orElseThrow(
                 () -> new BusinessException(BusinessCode.NOT_FOUND_SUBCATEGORY)
         );
 
-        return subCategoryMapper.to(subCategory);
+        return subCategoryMapper.toDetail(subCategory);
     }
 
     @Override

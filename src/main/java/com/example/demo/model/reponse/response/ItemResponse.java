@@ -7,4 +7,5 @@ public class ItemResponse {
     private Long id;
     private String name;
     private float price;
+    private Long sub_category_id;
 }

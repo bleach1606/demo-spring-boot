@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.model.BaseResponse;
+import com.example.demo.model.reponse.response.SubCategoryDetailResponse;
 import com.example.demo.model.reponse.response.SubCategoryResponse;
 import com.example.demo.model.request.request.SubCategoryRequest;
 import com.example.demo.service.SubCatrgoryService;
@@ -23,8 +24,13 @@ public class SubCategoryController {
     }
 
     @GetMapping("{id}")
-    public BaseResponse<SubCategoryResponse> getById(@PathVariable Long id) {
+    public BaseResponse<SubCategoryDetailResponse> getById(@PathVariable Long id) {
         return BaseResponse.ofSuccess(subCatrgoryService.findById(id));
+    }
+
+    @PutMapping("{id}")
+    public BaseResponse<SubCategoryResponse> updateById(@PathVariable Long id, @RequestBody SubCategoryRequest subCategoryRequest) {
+        return BaseResponse.ofSuccess(subCatrgoryService.updateById(id, subCategoryRequest));
     }
 
     @DeleteMapping("{id}")

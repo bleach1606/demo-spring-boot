@@ -8,5 +8,5 @@ import java.util.List;
 public class SubCategoryRequest {
     private String code;
     private String name;
-    private List<ItemRequest> itemList;
+    private Long category_id;
 }
