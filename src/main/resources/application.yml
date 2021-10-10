@@ -1,5 +1,5 @@
 server:
-  port: 8080
+  port: 8081
 
 # SPRING ----------------------------------------------------------------------------------------------------
 spring:
@@ -44,7 +44,7 @@ logging:
 
 application:
   swagger:
-    base-url: localhost:8080
+    base-url: localhost:8081
   jwt:
     confirmation-secret: 123456
     time-to-live: 3600 # seconds

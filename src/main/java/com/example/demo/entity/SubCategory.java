@@ -11,10 +11,8 @@ import javax.persistence.*;
 @Entity
 @Table(name = "sub_category", schema = "public")
 @Data
-@SuperBuilder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
 @EntityListeners(value = BaseModelListener.class)
 public class SubCategory extends BaseModel {
 
@@ -24,7 +22,7 @@ public class SubCategory extends BaseModel {
     @Column(name = "name", length = 50)
     private String name;
 
-    @ManyToOne()
+    @ManyToOne(fetch = FetchType.LAZY)
     private Category category;
 
 }

@@ -33,7 +33,7 @@ public final class HandleExceptionController {
         if (!StringUtils.isBlank(exception.getMessage())) {
             log.error("Exception Detail: {} and rootCause: {}",
                     exception.getMessage(),
-                    StringUtil.stackTraceToString(exception.getCause()));
+                    StringUtil.stackTraceToString(exception));
         }
         HttpStatus httpStatus = businessException.getErrorResponse().getStatus();
 

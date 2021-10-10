@@ -4,7 +4,7 @@ import com.example.demo.entity.User;
 import com.example.demo.exception.BusinessCode;
 import com.example.demo.exception.BusinessException;
 import com.example.demo.mapper.UserMapper;
-import com.example.demo.model.reponse.response.UserResponse;
+import com.example.demo.model.response.UserResponse;
 import com.example.demo.model.request.user.CreateUserRequest;
 import com.example.demo.repository.ProfileRepository;
 import com.example.demo.repository.UserRepository;

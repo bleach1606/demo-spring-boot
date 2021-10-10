@@ -12,10 +12,8 @@ import java.util.List;
 @Entity
 @Table(name = "category", schema = "public")
 @Data
-@SuperBuilder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
 @EntityListeners(value = BaseModelListener.class)
 public class Category extends BaseModel {
 
