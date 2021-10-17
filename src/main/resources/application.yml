@@ -48,3 +48,13 @@ application:
   jwt:
     confirmation-secret: 123456
     time-to-live: 3600 # seconds
+
+keycloak:
+  realm: login-app
+  auth-server-url: http://localhost:8080/auth
+  ssl-required: external
+  resource: login-app
+  credentials:
+    secret: 0b5c9662-94ea-4148-9c52-cde5034310a3
+  use-resource-role-mappings: true
+  bearer-only: true

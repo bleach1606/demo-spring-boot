@@ -1,46 +1,72 @@
 package com.example.demo.controller;
 
-import com.example.demo.model.BaseResponse;
-import com.example.demo.model.response.UserResponse;
-import com.example.demo.model.request.user.CreateUserRequest;
-import com.example.demo.service.UserService;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import org.springframework.data.domain.Pageable;
+import com.example.demo.model.UserDTO;
+import com.example.demo.service.KeycloakService;
+import org.keycloak.KeycloakPrincipal;
+import org.keycloak.representations.AccessToken;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import springfox.documentation.annotations.ApiIgnore;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+
+import javax.servlet.http.HttpServletRequest;
+
 
 @RestController
-@RequestMapping("public-api/v1.0.0/users")
+@RequestMapping("/users")
 public class UserController {
 
-    private final UserService userService;
+    private static final Logger log = LoggerFactory.getLogger(UserController.class);
 
-    public UserController(UserService userService) {
-        this.userService = userService;
+    private final KeycloakService keycloakService;
+
+    public UserController(KeycloakService keycloakService) {
+        this.keycloakService = keycloakService;
     }
 
-    @PostMapping
-    public BaseResponse<UserResponse> createUser(@RequestBody CreateUserRequest request) {
-        return BaseResponse.ofSuccess(userService.save(request));
+
+    @PostMapping(path = "/create")
+    public ResponseEntity<?> createUser(@RequestBody UserDTO userDTO) {
+        return ResponseEntity.ok(keycloakService.createUser(userDTO));
     }
 
-    @GetMapping("{id}")
-    public BaseResponse<UserResponse> findById(@PathVariable Long id) {
-        return BaseResponse.ofSuccess(userService.findById(id));
+    @PostMapping(path = "/signin")
+    public ResponseEntity<?> signin(@RequestBody UserDTO userDTO) {
+        return ResponseEntity.ok(keycloakService.signup(userDTO));
     }
 
-    @GetMapping("")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "page", dataType = "integer", paramType = "query",
-                    value = "Results page you want to retrieve (0..N)", defaultValue = "0"),
-            @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
-                    value = "Number of records per page.", defaultValue = "15"),
-            @ApiImplicitParam(name = "sort", allowMultiple = true, dataType = "string",
-                    paramType = "query", value = "Sorting criteria in the format: property(,asc|desc). "
-                    + "Default sort order is ascending. Multiple sort criteria are supported.")})
-    public BaseResponse<?> findAll(@ApiIgnore Pageable pageable) {
-        return BaseResponse.ofSuccess(userService.findALL(pageable));
+    @GetMapping(value = "/logout")
+    public ResponseEntity<?> logoutUser(HttpServletRequest request) {
+
+        request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
+
+        AccessToken token = ((KeycloakPrincipal<?>) request.getUserPrincipal()).getKeycloakSecurityContext().getToken();
+
+        String userId = token.getSubject();
+
+        keycloakService.logoutUser(userId);
+
+        return new ResponseEntity<>("Hi!, you have logged out successfully!", HttpStatus.OK);
+
     }
+
+    @GetMapping(value = "/update/password")
+    public ResponseEntity<?> updatePassword(HttpServletRequest request, String newPassword) {
+
+        request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
+
+        AccessToken token = ((KeycloakPrincipal<?>) request.getUserPrincipal()).getKeycloakSecurityContext().getToken();
+
+        String userId = token.getSubject();
+
+        keycloakService.resetPassword(newPassword, userId);
+
+        return new ResponseEntity<>("Hi!, your password has been successfully updated!", HttpStatus.OK);
+
+    }
+
 
 }

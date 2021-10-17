@@ -1,6 +1,7 @@
 version: '3.5'
 
 services:
+
   postgres:
     container_name: postgres_container
     image: postgres
@@ -13,7 +14,7 @@ services:
     ports:
       - "5432:5432"
     networks:
-      - postgres
+      - demo
     restart: unless-stopped
 
   pgadmin:
@@ -29,13 +30,41 @@ services:
     ports:
       - "80:80"
     networks:
-      - postgres
+      - demo
     restart: unless-stopped
 
+  postgresql:
+    image: postgres
+    volumes:
+      - postgresql:/data/postgresql
+    environment:
+      POSTGRES_DB: keycloak
+      POSTGRES_USER: keycloak
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5431:5431"
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:latest
+    environment:
+      DB_VENDOR: POSTGRES
+      DB_ADDR: postgresql
+      DB_DATABASE: keycloak
+      DB_USER: keycloak
+      DB_SCHEMA: public
+      DB_PASSWORD: password
+      KEYCLOAK_USER: admin
+      KEYCLOAK_PASSWORD: 123456
+    ports:
+      - 8080:8080
+    depends_on:
+      - postgres
+
 networks:
-  postgres:
+  demo:
     driver: bridge
 
 volumes:
   postgres:
   pgadmin:
+  postgresql:
