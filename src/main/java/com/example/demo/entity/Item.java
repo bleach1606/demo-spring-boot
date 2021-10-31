@@ -7,28 +7,28 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
-import java.util.List;
+import java.util.Objects;
 
 @Entity
-@Table(name = "sub_category", schema = "public")
+@Table(name = "item", schema = "public")
 @Data
 @SuperBuilder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
 @EntityListeners(value = BaseModelListener.class)
-public class SubCategory extends BaseModel {
+public class Item extends BaseModel {
 
-    @Column(name = "code", length = 50, unique = true)
+    @Column(name = "code", length = 50)
     private String code;
 
     @Column(name = "name", length = 50)
     private String name;
 
-    @ManyToOne()
-    private Category category;
+    @Column(name = "price")
+    private Double price;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "sub_category_id")
-    private List<Item> items;
+    @ManyToOne()
+    private SubCategory subCategory;
+
 }
