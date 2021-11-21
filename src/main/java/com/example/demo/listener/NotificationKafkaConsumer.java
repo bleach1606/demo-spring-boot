@@ -11,6 +11,8 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class NotificationKafkaConsumer {
 
+    private final NotificationProcessor processor;
+
     @KafkaListener(
             topics = "${kafka.topic-demo}",
             groupId = "${kafka.group-id-demo}",
@@ -19,7 +21,7 @@ public class NotificationKafkaConsumer {
     public void receiveMessage(NotificationMessage message) {
         try {
             log.info("Kafka Received message Content: [{}]", message);
-//            this.processor.process(userEventDTO);
+            processor.process(message);
         } catch (Exception e) {
             log.error("Kafka Error when sending association: " + message + ", ex: " + e, e);
         }
