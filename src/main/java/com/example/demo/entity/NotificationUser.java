@@ -7,28 +7,19 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
-import java.util.Objects;
+import java.util.UUID;
 
 @Entity
-@Table(name = "item", schema = "public")
+@Table(name = "notification_user", schema = "public")
 @Data
 @SuperBuilder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
 @EntityListeners(value = BaseModelListener.class)
-public class Item extends BaseModel {
+public class NotificationUser extends BaseModelUUID {
 
-    @Column(name = "code", length = 50)
-    private String code;
+    private UUID notificationId;
 
-    @Column(name = "name", length = 50)
-    private String name;
-
-    @Column(name = "price")
-    private Double price;
-
-    @ManyToOne()
-    private SubCategory subCategory;
-
+    private UUID userId;
 }

@@ -6,25 +6,22 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
+import javax.persistence.Table;
+import java.util.UUID;
 
 @Entity
-@Table(name = "profile", schema = "public")
+@Table(name = "notification_user_read", schema = "public")
 @Data
 @SuperBuilder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
 @EntityListeners(value = BaseModelListener.class)
-public class Profile extends BaseModel {
+public class NotificationUserRead extends BaseModelUUID {
 
-    @Column(name = "username", length = 50)
-    private String username;
+    private UUID notificationId;
 
-    @Column(name = "password", length = 50)
-    private String password;
-
-    @OneToOne(cascade = CascadeType.ALL) // default
-    @JoinColumn(name = "user_id")
-    private User user;
+    private UUID userId;
 }
