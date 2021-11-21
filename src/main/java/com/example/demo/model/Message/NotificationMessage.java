@@ -30,6 +30,6 @@ public class NotificationMessage {
     private String contentEn;
     private String note;
 
-//    @JsonProperty("users")
-//    private List<UserMessage> users = Lists.newArrayList();
+    @JsonProperty("users")
+    private List<UserMessage> users = Lists.newArrayList();
 }

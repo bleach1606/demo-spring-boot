@@ -6,9 +6,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
-import javax.persistence.Entity;
-import javax.persistence.EntityListeners;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.UUID;
 
 @Entity
@@ -21,7 +19,9 @@ import java.util.UUID;
 @EntityListeners(value = BaseModelListener.class)
 public class NotificationUserRead extends BaseModelUUID {
 
-    private UUID notificationId;
+    @ManyToOne
+    @JoinColumn(name = "notification_id")
+    private Notification notification;
 
     private UUID userId;
 }

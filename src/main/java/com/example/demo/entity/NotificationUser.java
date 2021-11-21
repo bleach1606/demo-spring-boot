@@ -19,7 +19,9 @@ import java.util.UUID;
 @EntityListeners(value = BaseModelListener.class)
 public class NotificationUser extends BaseModelUUID {
 
-    private UUID notificationId;
+    @ManyToOne
+    @JoinColumn(name = "notification_id")
+    private Notification notification;
 
     private UUID userId;
 }

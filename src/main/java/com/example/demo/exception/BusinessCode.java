@@ -16,4 +16,8 @@ public class BusinessCode {
     public static final ErrorResponse NOT_FOUND_USER =
             new ErrorResponse("NOT-FOUND-USER", "Not found user with id", HttpStatus.BAD_REQUEST);
 
+    public static final ErrorResponse NOT_FOUND_NOTIFICATION =
+            new ErrorResponse("NOT-FOUND-NOTIFICATION", "Not found notification with id", HttpStatus.BAD_REQUEST);
+
+
 }

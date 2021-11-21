@@ -14,9 +14,9 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public class CusBeanUtils {
+public class BeanUtilsCus {
 
-    private CusBeanUtils() {
+    private BeanUtilsCus() {
     }
 
     public static void refine(Object source, Function<Object, Object> refineFn) {
