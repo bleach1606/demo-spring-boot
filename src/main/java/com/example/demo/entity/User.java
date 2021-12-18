@@ -24,6 +24,10 @@ public class User extends BaseModel {
     @Column(name = "password", length = 50)
     private String password;
 
+    private Integer age;
+
+    private String name;
+
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER) // default
     @JoinColumn(name = "profile_id")
     private Profile profile;

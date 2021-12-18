@@ -15,6 +15,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 
 @Service
 @Log4j2
@@ -47,8 +49,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Page<UserResponse> findALL(Pageable pageable) {
+
+        List<User> userList = userRepo.findAll(
+                UserSpecification.filter(null, null, null, null)
+        );
+
+
         Page<User> users = userRepo.findAll(
-                UserSpecification.filter(null, null),
+                UserSpecification.filter(null, null, null, null),
                 pageable
         );
         return users.map(userMapper::to);
